@@ -21,7 +21,7 @@ def places_by_city(city_id):
 
         if detector != 0:
             results = []
-            for place in storage.all("Places").values():
+            for place in storage.all("Place").values():
                 if place.city_id == city_id:
                     results.append(place.to_dict())
             return jsonify(results)
@@ -54,7 +54,7 @@ def places_by_city(city_id):
                     pass
 
             # to create the new Place instance
-            if detector == 2:    
+            if detector == 2:
                 http_data["city_id"] = city_id
                 new_place = Place(**http_data)
                 new_place.save()
@@ -87,7 +87,8 @@ def place_by_id(place_id):
                 if not http_data:
                     abort(400, 'Not a JSON')
 
-                statics_attrs = ["id", "user_id", "city_id", "created_at", "updated_at"]
+                statics_attrs = ["id", "user_id",
+                                 "city_id", "created_at", "updated_at"]
                 for key, value in http_data.items():
                     if key not in statics_attrs:
                         setattr(obj, key, value)
