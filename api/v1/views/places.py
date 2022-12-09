@@ -59,6 +59,8 @@ def places_by_city(city_id):
                 new_place = Place(**http_data)
                 new_place.save()
                 return jsonify(new_place.to_dict()), 201
+            else:
+                abort(404)
         else:
             abort(404)
 
