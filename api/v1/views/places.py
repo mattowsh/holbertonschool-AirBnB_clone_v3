@@ -42,20 +42,13 @@ def places_by_city(city_id):
         if not user:
              abort(404, "Not found")
 
-        # to detect a valid city_id
-        detector = 0
-        for obj in storage.all("City").values():
-            if obj.id == city_id:
-                detector = 1
-                break
-
-        if detector != 0:
-            http_data["city_id"] = city_id
-            new_place = Place(**http_data)
-            new_place.save()
-            return jsonify(new_place.to_dict()), 201
+        http_data["city_id"] = city_id
+        new_place = Place(**http_data)
+        new_place.save()
+        return jsonify(new_place.to_dict()), 201
     else:
         abort(404)
+
 
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
 def place_by_id(place_id):
