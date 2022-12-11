@@ -27,27 +27,25 @@ def places_by_city(city_id):
                     results.append(place.to_dict())
             return jsonify(results)
 	else:
-            abort(404)	
+            abort(404)
 
-    elif request.method == 'POST':
-        http_data = request.get_json()
-        if not http_data:
+    elif request.method == "POST":
+        req_json = request.get_json()
+        if not req_json:
             abort(400, 'Not a JSON')
-        if "user_id" not in http_data:
-            abort(400, 'Missing user_id')
-        # to check if we have a valid user_id
-        user = storage.get(User, http_data.get("user_id"))
+        if not req_json.get("user_id"):
+            abort(400, "Missing user_id")
+        user = storage.get(User, req_json.get("user_id"))
         if not user:
             abort(404, "Not found")
-        if "name" not in http_data:
+        if 'name' not in req_json:
             abort(400, 'Missing name')
-
-        http_data["city_id"] = city_id
-        new_place = Place(**http_data)
+        req_json["city_id"] = city_id
+        new_place = Place(**req_json)
         new_place.save()
         return jsonify(new_place.to_dict()), 201
     else:
-        abort(404)
+        abort(404)	
 
 
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
