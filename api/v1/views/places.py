@@ -3,7 +3,7 @@
 from flask import jsonify, request, abort
 from models import storage
 from models.place import Place
-from api.v1.views import app_views
+from api.v1.views.__init__ import app_views
 
 
 @app_views.route('/cities/<string:city_id>/places', methods=["GET", "POST"])
@@ -25,6 +25,8 @@ def places_by_city(city_id):
                 if place.city_id == city_id:
                     results.append(place.to_dict())
             return jsonify(results)
+	else:
+            abort(404)	
 
     elif request.method == 'POST':
         http_data = request.get_json()
