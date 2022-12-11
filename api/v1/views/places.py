@@ -34,6 +34,13 @@ def places_by_city(city_id):
             abort(400, 'Not a JSON')
         if "user_id" not in http_data:
             abort(400, 'Missing user_id')
+        if "name" not in http_data:
+            abort(400, 'Missing name')
+
+        # to check if we have a valid user_id
+        user = storage.get(User, http_data.get("user_id"))
+        if not user:
+             abort(404, "Not found")
 
         # to detect a valid city_id
         detector = 0
@@ -43,23 +50,12 @@ def places_by_city(city_id):
                 break
 
         if detector != 0:
-            # to check if exist a valid user
-            for obj in storage.all("User").values():
-                if obj.id == http_data["user_id"]:
-                    detector = 2
-                    break
-
-            # to create the new Place instance
-            if detector == 2:
-                http_data["city_id"] = city_id
-                new_place = Place(**http_data)
-                new_place.save()
-                return jsonify(new_place.to_dict()), 201
-            else:
-                abort(404)
-        else:
-            abort(404)
-
+            http_data["city_id"] = city_id
+            new_place = Place(**http_data)
+            new_place.save()
+            return jsonify(new_place.to_dict()), 201
+    else:
+        abort(404)
 
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
 def place_by_id(place_id):
