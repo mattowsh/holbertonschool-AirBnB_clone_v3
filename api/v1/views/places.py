@@ -8,46 +8,34 @@ from api.v1.views import app_views
 
 
 @app_views.route('/cities/<string:city_id>/places', methods=["GET", "POST"])
-def places_by_city(city_id):
-    """Retrieves all places of a City object or add a new Place by city_id"""
-
-    if request.method == 'GET':
-        detector = 0
-        for obj in storage.all("City").values():
-            if obj.id == city_id:
-                detector = 1
-                break
-            else:
-                pass
-
-        if detector != 0:
-            results = []
-            for place in storage.all("Place").values():
-                if place.city_id == city_id:
-                    results.append(place.to_dict())
-            return jsonify(results)
-        else:
-            abort(404)
-
-    elif request.method == "POST":
-        # Getting the JSON data from the request.
-        req_json = request.get_json()
-        if not req_json:
-            abort(400, 'Not a JSON')
-        if not req_json.get("user_id"):
-            abort(400, "Missing user_id")
-        user = storage.get(User, req_json.get("user_id"))
-        if not user:
-            abort(404, "Not found")
-        if 'name' not in req_json:
-            abort(400, 'Missing name')
-        req_json["city_id"] = city_id
-        new_place = Place(**req_json)
-        new_place.save()
-        return jsonify(new_place.to_dict()), 201
+def places_from_city(city_id):
+    # Creating a list of dictionaries of all the cities in the database.
+    cities = [obj.to_dict() for obj in storage.all("City").values()]
+    # Creating a list of all the ids of the cities in the database.
+    citiesIds = [obj['id'] for obj in cities]
+    if city_id in citiesIds:
+        if request.method == "GET":
+            places = storage.all("Place")
+            placesInCity = [obj.to_dict() for obj in places.values()
+                           if obj.city_id == city_id]
+            return jsonify(placesInCity)
+        elif request.method == "POST":
+            req_json = request.get_json()
+            if not req_json:
+                abort(400, 'Not a JSON')
+            if not req_json.get("user_id"):
+                abort(400, "Missing user_id")
+            user = storage.get(User, req_json.get("user_id"))
+            if not user:
+                abort(404, "Not found")
+            if 'name' not in req_json:
+                abort(400, 'Missing name')
+            req_json["city_id"] = city_id
+            new_place = Place(**req_json)
+            new_place.save()
+            return jsonify(new_place.to_dict()), 201
     else:
         abort(404)
-
 
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
 def place_by_id(place_id):
