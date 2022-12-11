@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-""" State endpoints """
+""" amenity endpoints """
 from flask import jsonify, request, abort
 from models import storage
 from models.amenity import Amenity
@@ -20,9 +20,9 @@ def all_amenities():
 def get_amenity_by_amenity_id(amenity_id):
         """Return amenity by given id"""
         for i in storage.all("Amenity").values():
-                if i.id == amenity_id:
-                        my_amenity = storage.all()["Amenity" + '.' + amenity_id]
-                        return jsonify(my_amenity.to_dict())
+                if i.id == ameniy_id:
+                        my_ameni = storage.all()["Amenity" + '.' + amenity_id]
+                        return jsonify(my_ameni.to_dict())
         abort(404)
 
 
