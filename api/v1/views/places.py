@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 """ Place endpoints """
-from api.v1.views import app_views
-from flask import jsonify, abort, request
+from flask import jsonify, request, abort
 from models import storage
 from models.place import Place
 from models.user import User
+from api.v1.views import app_views
 
 
 @app_views.route('/cities/<string:city_id>/places', methods=["GET", "POST"])
@@ -26,8 +26,6 @@ def places_by_city(city_id):
                 if place.city_id == city_id:
                     results.append(place.to_dict())
             return jsonify(results)
-	else:
-            abort(404)
 
     elif request.method == "POST":
         req_json = request.get_json()
@@ -45,7 +43,7 @@ def places_by_city(city_id):
         new_place.save()
         return jsonify(new_place.to_dict()), 201
     else:
-        abort(404)	
+        abort(404)
 
 
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
