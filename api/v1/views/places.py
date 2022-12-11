@@ -40,7 +40,7 @@ def places_by_city(city_id):
         # to check if we have a valid user_id
         user = storage.get(User, http_data.get("user_id"))
         if not user:
-             abort(404, "Not found")
+            abort(404, "Not found")
 
         http_data["city_id"] = city_id
         new_place = Place(**http_data)
