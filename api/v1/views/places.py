@@ -26,8 +26,11 @@ def places_by_city(city_id):
                 if place.city_id == city_id:
                     results.append(place.to_dict())
             return jsonify(results)
+        else:
+            abort(404)
 
     elif request.method == "POST":
+        # Getting the JSON data from the request.
         req_json = request.get_json()
         if not req_json:
             abort(400, 'Not a JSON')
