@@ -21,8 +21,8 @@ def get_amenity_by_amenity_id(amenity_id):
         """Return amenity by given id"""
         for i in storage.all("Amenity").values():
                 if i.id == amenity_id:
-                        my_amen = storage.all()["Amenity" + '.' + amenity_id]
-                        return jsonify(my_amen.to_dict())
+                        my_amenity = storage.all()["Amenity" + '.' + amenity_id]
+                        return jsonify(my_amenity.to_dict())
         abort(404)
 
 
