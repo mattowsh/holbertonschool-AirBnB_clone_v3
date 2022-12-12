@@ -37,6 +37,7 @@ def places_from_city(city_id):
     else:
         abort(404)
 
+
 @app_views.route('/places/<string:place_id>', methods=["GET", "DELETE", "PUT"])
 def place_by_id(place_id):
     """Retrieves, deletes or updates a Place object by place_id"""
