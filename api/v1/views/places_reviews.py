@@ -19,7 +19,7 @@ def places_reviews(place_id):
 
         all_reviews = []
         for place in place.reviews:
-            all_reviews.append(place)
+            all_reviews.append(place.to_dict())
         return jsonify(all_reviews)
 
     elif request.method == 'POST':
@@ -45,13 +45,15 @@ def places_reviews(place_id):
         return jsonify(new_review.to_dict()), 201
 
 
-@app_views.route('reviews/<review_id>', methods=["GET", "DELETE", "PUT"])
+@app_views.route('reviews/<string:review_id>', methods=["GET", "DELETE", "PUT"])
 def review_by_id(review_id):
-    """Retrieves, deletes or updates a State object by state_id"""
+    """Retrieves, deletes or updates a Review object by review_id"""
     if request.method == 'GET':
-        for obj in storage.all("Review").values():
-            if obj.id == review_id:
-                return jsonify(obj.to_dict())
+        review = storage.get(Review, review_id)
+        if not review:
+            abort(404)
+
+        return jsonify(review.to_dict())
 
     elif request.method == 'DELETE':
         review = storage.get(Review, review_id)
@@ -75,9 +77,9 @@ def review_by_id(review_id):
                         'place_id', 'created_at', 'updated_at']
         for key, value in http_data.items():
             if key not in static_attrs:
-                setattr(obj, key, value)
+                setattr(review, key, value)
             storage.save()
-            return jsonify(obj.to_dict()), 200
+            return jsonify(review.to_dict()), 200
 
     abort(404)
 
