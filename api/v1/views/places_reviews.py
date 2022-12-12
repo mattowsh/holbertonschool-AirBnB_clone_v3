@@ -18,8 +18,8 @@ def places_reviews(place_id):
             abort(404)
 
         all_reviews = []
-        for place in place.reviews:
-            all_reviews.append(place.to_dict())
+        for element in place.reviews:
+            all_reviews.append(element.to_dict())
         return jsonify(all_reviews)
 
     elif request.method == 'POST':
@@ -59,10 +59,10 @@ def review_by_id(review_id):
         review = storage.get(Review, review_id)
         if not review:
             abort(404)
-        else:
-            storage.delete(review)
-            storage.save()
-            return jsonify({}), 200
+
+        storage.delete(review)
+        storage.save()
+        return jsonify({}), 200
 
     elif request.method == 'PUT':
         review = storage.get(Review, review_id)
